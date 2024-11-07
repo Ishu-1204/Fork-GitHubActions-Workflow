@@ -14,7 +14,7 @@ jobs:
 
     - name: Install jq
       run: sudo apt-get install -y jq
-      
+
     - name: Debug PR Body
       run: |
         echo "PR Body:"
@@ -23,12 +23,17 @@ jobs:
         echo "$PR_BODY"
 
     - name: Extract Organization Username and Repository Name
+      id: extract
       run: |
-          ORG_USERNAME=$(echo "${{ github.event.pull_request.body }}" | grep -oP 'Org Name:.*?\[(.*?)\]' | cut -d '[' -f 2 | cut -d ']' -f 1)
-          REPO_NAME=$(echo "${{ github.event.pull_request.body }}" | grep -oP 'Repo Name:.*?\[(.*?)\]' | cut -d '[' -f 2 | cut -d ']' -f 1)
-          echo "::set-output name=org_username::$ORG_USERNAME"
-          echo "::set-output name=repo_name::$REPO_NAME"
-    
+        PR_BODY=$(jq -r '.pull_request.body' $GITHUB_EVENT_PATH)
+        echo "Extracted PR Body: $PR_BODY"
+        ORG_USERNAME=$(echo "$PR_BODY" | grep -oP 'Org Name:.*?\[(.*?)\]' | cut -d '[' -f 2 | cut -d ']' -f 1 || echo "Not provided")
+        REPO_NAME=$(echo "$PR_BODY" | grep -oP 'Repo Name:.*?\[(.*?)\]' | cut -d '[' -f 2 | cut -d ']' -f 1 || echo "Not provided")
+        echo "Extracted Org Name: $ORG_USERNAME"
+        echo "Extracted Repo Name: $REPO_NAME"
+        echo "ORG_USERNAME=$ORG_USERNAME" >> $GITHUB_ENV
+        echo "REPO_NAME=$REPO_NAME" >> $GITHUB_ENV
+
     - name: Display extracted inputs
       run: |
         echo "Org Name: ${{ env.ORG_USERNAME }}"
