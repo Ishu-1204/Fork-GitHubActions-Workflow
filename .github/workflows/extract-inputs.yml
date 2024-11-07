@@ -25,10 +25,8 @@ jobs:
     - name: Extract Organization Username and Repository Name
       id: extract
       run: |
-        PR_BODY=$(jq -r '.pull_request.body' $GITHUB_EVENT_PATH)
-        echo "Extracted PR Body: $PR_BODY"
-        ORG_USERNAME=$(echo "$PR_BODY" | grep -oP 'Org Name:.*?\[(.*?)\]' | cut -d '[' -f 2 | cut -d ']' -f 1 || echo "Not provided")
-        REPO_NAME=$(echo "$PR_BODY" | grep -oP 'Repo Name:.*?\[(.*?)\]' | cut -d '[' -f 2 | cut -d ']' -f 1 || echo "Not provided")
+        ORG_USERNAME=$(echo "${{ github.event.pull_request.body }}" | grep -oP 'Org Name:.*?\[(.*?)\]' | cut -d '[' -f 2 | cut -d ']' -f 1 || echo "Not provided")
+        REPO_NAME=$(echo "${{ github.event.pull_request.body }}" | grep -oP 'Repo Name:.*?\[(.*?)\]' | cut -d '[' -f 2 | cut -d ']' -f 1 || echo "Not provided")
         echo "Extracted Org Name: $ORG_USERNAME"
         echo "Extracted Repo Name: $REPO_NAME"
         echo "ORG_USERNAME=$ORG_USERNAME" >> $GITHUB_ENV
