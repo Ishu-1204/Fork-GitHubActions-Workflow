@@ -12,12 +12,15 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Install jq
+      run: sudo apt-get install -y jq
+
     - name: Extract Org and Repo Name
       id: extract
       run: |
         PR_BODY=$(jq -r '.pull_request.body' $GITHUB_EVENT_PATH)
-        ORG_NAME=$(echo "$PR_BODY" | grep -oP '(?<=Org Name: ).*')
-        REPO_NAME=$(echo "$PR_BODY" | grep -oP '(?<=Repo Name: ).*')
+        ORG_NAME=$(echo "$PR_BODY" | grep -oP '(?<=Org Name: ).*' || echo "Not provided")
+        REPO_NAME=$(echo "$PR_BODY" | grep -oP '(?<=Repo Name: ).*' || echo "Not provided")
         echo "ORG_NAME=$ORG_NAME" >> $GITHUB_ENV
         echo "REPO_NAME=$REPO_NAME" >> $GITHUB_ENV
 
