@@ -1,4 +1,4 @@
-name: Extract Inputs
+name: Extract Inputs & Trigger Main Workflow
 
 on:
   pull_request:
@@ -38,3 +38,10 @@ jobs:
       run: |
         echo "Org Name: ${{ env.ORG_USERNAME }}"
         echo "Repo Name: ${{ env.REPO_NAME }}"
+
+    - name: Trigger main workflow
+      run: |
+        curl -X POST -H "Accept: application/vnd.github.v3+json" \
+        -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+        https://api.github.com/repos/${{ github.repository }}/dispatches \
+        -d '{"event_type":"trigger-main-workflow","client_payload":{"organization":"${{ env.ORG_USERNAME }}","repository":"${{ env.REPO_NAME }}"}}'
