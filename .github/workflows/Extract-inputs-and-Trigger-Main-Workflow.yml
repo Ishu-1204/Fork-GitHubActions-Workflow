@@ -43,7 +43,7 @@ jobs:
       run: |
         echo "Triggering workflow for Org: ${{ env.ORG_USERNAME }}, Repo: ${{ env.REPO_NAME }}"
         RESPONSE=$(curl -s -o response.txt -w "%{http_code}" -X POST -H "Accept: application/vnd.github.v3+json" \
-        -H "Authorization: token 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" \
+        -H "Authorization: Bearer ${{ secrets.PAT_TOKEN }}" \
         https://api.github.com/repos/${{ env.ORG_USERNAME }}/${{ env.REPO_NAME }}/actions/workflows/Scenario_1.yml/dispatches \
         -d '{"ref":"main"}')
         echo "HTTP Response Code: $RESPONSE"
