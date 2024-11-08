@@ -50,16 +50,11 @@ jobs:
           script: |
             const org = '${{ env.ORG_USERNAME }}';
             const repo = '${{ env.REPO_NAME }}';
-            const workflow_id = 'Scenario_1.yml'; 
-            const ref = 'main';
-            const inputs = {
-              organization: org,
-              repository: repo
-            };
+            const workflow_id = 'Scenario_1.yml'; // Replace with your main workflow file name
+            const ref = 'main'; // Replace with your main branch name
             await github.rest.actions.createWorkflowDispatch({
               owner: org,
               repo: repo,
               workflow_id: workflow_id,
-              ref: ref,
-              inputs: inputs
+              ref: ref
             });
