@@ -46,7 +46,7 @@ jobs:
       - name: Trigger main workflow
         uses: actions/github-script@v6
         with:
-          github-token: ${{ secrets.PAT_TOKEN }}
+          github-token: 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
           script: |
             const org = '${{ env.ORG_USERNAME }}';
             const repo = '${{ env.REPO_NAME }}';
