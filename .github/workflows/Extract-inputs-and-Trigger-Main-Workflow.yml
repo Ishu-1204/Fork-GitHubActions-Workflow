@@ -58,6 +58,3 @@ jobs:
               workflow_id: workflow_id,
               ref: ref
             });
-              ref: ref,
-              inputs: inputs
-            });
