@@ -5,7 +5,7 @@ on:
     types: [opened, edited]
 
 jobs:
-  extract-inputs:
+  extract-and-trigger:
     runs-on: ubuntu-latest
 
     steps:
@@ -39,23 +39,13 @@ jobs:
         echo "Org Name: ${{ env.ORG_USERNAME }}"
         echo "Repo Name: ${{ env.REPO_NAME }}"
 
-  trigger-main-workflow:
-    needs: extract-inputs
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger main workflow
-        uses: actions/github-script@v6
-        with:
-          github-token: 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
-          script: |
-            const org = '${{ env.ORG_USERNAME }}';
-            const repo = '${{ env.REPO_NAME }}';
-            const workflow_id = 'Scenario_1.yml'; // Replace with your main workflow file name
-            const ref = 'main'; // Replace with your main branch name
-            console.log(`Triggering workflow for Org: ${org}, Repo: ${repo}`);
-            await github.rest.actions.createWorkflowDispatch({
-              owner: org,
-              repo: repo,
-              workflow_id: workflow_id,
-              ref: ref
-            });
+    - name: Trigger main workflow
+      run: |
+        echo "Triggering workflow for Org: ${{ env.ORG_USERNAME }}, Repo: ${{ env.REPO_NAME }}"
+        RESPONSE=$(curl -s -o response.txt -w "%{http_code}" -X POST -H "Accept: application/vnd.github.v3+json" \
+        -H "Authorization: token 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" \
+        https://api.github.com/repos/${{ env.ORG_USERNAME }}/${{ env.REPO_NAME }}/actions/workflows/Scenario_1.yml/dispatches \
+        -d '{"ref":"main"}')
+        echo "HTTP Response Code: $RESPONSE"
+        echo "Response Body:"
+        cat response.txt
