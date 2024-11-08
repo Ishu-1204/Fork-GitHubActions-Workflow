@@ -21,6 +21,7 @@ jobs:
         cat $GITHUB_EVENT_PATH
         PR_BODY=$(jq -r '.pull_request.body' $GITHUB_EVENT_PATH)
         echo "$PR_BODY"
+
     - name: Extract Organization Username and Repository Name
       id: extract
       run: |
@@ -32,11 +33,12 @@ jobs:
         echo "Extracted Repo Name: $REPO_NAME"
         echo "ORG_USERNAME=$ORG_USERNAME" >> $GITHUB_ENV
         echo "REPO_NAME=$REPO_NAME" >> $GITHUB_ENV
+
     - name: Display extracted inputs
       run: |
         echo "Org Name: ${{ env.ORG_USERNAME }}"
         echo "Repo Name: ${{ env.REPO_NAME }}"
-	
+
   trigger-main-workflow:
     needs: extract-inputs
     runs-on: ubuntu-latest
@@ -50,6 +52,7 @@ jobs:
             const repo = '${{ env.REPO_NAME }}';
             const workflow_id = 'Scenario_1.yml'; // Replace with your main workflow file name
             const ref = 'main'; // Replace with your main branch name
+            console.log(`Triggering workflow for Org: ${org}, Repo: ${repo}`);
             await github.rest.actions.createWorkflowDispatch({
               owner: org,
               repo: repo,
